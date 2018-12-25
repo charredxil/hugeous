@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+app_name = 'proof'
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('sandbox/', views.sandbox, name='sandbox'),
 ]
