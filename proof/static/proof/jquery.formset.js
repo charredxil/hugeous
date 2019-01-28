@@ -179,13 +179,17 @@
                     delCssSelector = $.trim(options.deleteCssClass).replace(/\s+/g, '.');
                 applyExtraClasses(row, formCount);
                 row.insertBefore(buttonRow).show();
-                row.find(childElementSelector).each(function() {
-                    updateElementIndex($(this), options.prefix, formCount);
-                });
                 totalForms.val(formCount + 1);
                 // Check if we're above the minimum allowed number of forms -> show all delete link(s)
                 if (showDeleteLinks()){
                     $('a.' + delCssSelector).each(function(){$(this).show();});
+                }
+
+                forms = $('.' + options.formCssClass).not(':hidden');
+                for (var i=0, formCount=forms.length; i<formCount; i++) {
+                    forms.eq(i).find(childElementSelector).each(function() {
+                        updateElementIndex($(this), options.prefix, i);
+                    });
                 }
                 // Check if we've exceeded the maximum allowed number of forms:
                 if (!showAddButton()) buttonRow.hide();
@@ -211,6 +215,6 @@
         keepFieldValues: '',             // jQuery selector for fields whose values should be kept when the form is cloned
         added: null,                     // Function called each time a new form is added
         removed: null,                    // Function called each time a form is deleted
-        disableInitialDels: true,
+        disableInitialDels: false,
     };
 })(jQuery);

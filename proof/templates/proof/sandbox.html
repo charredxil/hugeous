@@ -3,7 +3,7 @@
 {% load static %}
 {% load widget_tweaks %}
 
-{% block title %} Hugeous - Proof Sandbox {% endblock title %}
+{% block title %} huGEOus - Proof Sandbox {% endblock title %}
 
 {% block content %}
     <div class="container-fluid mt-3 col-lg-6 justify-content-between">
@@ -14,16 +14,43 @@
         {% for form in formset %}
           <div class="form-row input-group mb-1">
             {{ form.statement|add_class:"form-control" }}
-            {{ form.statement.errors }}
             {{ form.reason|add_class:"form-control" }}
-            {{ form.reason.errors }}
           </div>
+
         {% endfor %}
+
+        <input type="submit" class="btn btn-info btn-block mb-1" value="Verify">
+
         {% if valid %}
-          <input type="submit" class="btn btn-success" value="Verified">
-        {% else %}
-          <input type="submit" class="btn btn-info" value="Verify">
+          <div class="alert alert-success mb-1">
+            <strong>Success: </strong>Your proof is valid.
+          </div>
         {% endif %}
+
+        {% if formset.errors %}
+          {% for form in formset %}
+            {% for field in form %}
+              {% for error in field.errors %}
+                <div class="alert alert-danger mb-1">
+                  <strong>Error: </strong>{{ error|escape }}
+                </div>
+              {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+              <div class="alert alert-danger mb-1">
+                <strong>Error: </strong>{{ error|escape }}
+              </div>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+        {% if formset.non_form_errors %}
+          {% for error in formset.non_form_errors %}
+            <div class="alert alert-danger mb-1">
+              <strong>Error: </strong>{{ error|escape }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
       </form>
     </div>
 
