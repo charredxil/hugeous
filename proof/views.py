@@ -1,30 +1,51 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.forms import formset_factory
+from django.contrib.admin.views.decorators import staff_member_required
 
-from .forms import ProofRowForm, ProofVerifyFormSet
+from .forms import ProofRowForm, ProofVerifyFormSet, PostulateRowForm, PostulateVerifyFormSet, NameForm
+from . import prover
+
 
 def sandbox(request):
     my_template = "proof/sandbox.html"
 
     ProofForm = formset_factory(ProofRowForm, ProofVerifyFormSet, extra=1)
-    data = {
-        'form-TOTAL_FORMS': '2',
-        'form-INITIAL_FORMS': '0',
-        'form-MAX_NUM_FORMS': '',
-    }
 
     if request.method == 'POST':
         formset = ProofForm(request.POST)
         if formset.is_valid():
-            for form in formset:
-                print(form.cleaned_data["reason"], form.cleaned_data["statement"])
             context = {
-                'formset' : formset,
-                'valid' : True
+                'formset': formset,
+                'valid': True
             }
             return render(request, my_template, context)
     else:
         formset = ProofForm()
 
     return render(request, my_template, {'formset': formset})
+
+@staff_member_required
+def postulate(request):
+    my_template = "proof/postulate.html"
+
+    PostulateForm = formset_factory(
+        PostulateRowForm, PostulateVerifyFormSet, extra=1)
+
+    context = {}
+    if request.method == 'POST':
+        formset = PostulateForm(request.POST)
+        nameform = NameForm(request.POST)
+        if formset.is_valid() and nameform.is_valid():
+            new_postulate = prover.postulate(
+                nameform.cleaned_data["name"], formset.plist)
+            if new_postulate:
+                prover.save_reason(new_postulate)
+            context["valid"] = True
+    else:
+        formset = PostulateForm()
+        nameform = NameForm()
+
+    context["formset"] = formset
+    context["nameform"] = nameform
+
+    return render(request, my_template, context)

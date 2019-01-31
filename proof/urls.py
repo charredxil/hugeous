@@ -5,4 +5,5 @@ from . import views
 app_name = 'proof'
 urlpatterns = [
     path('sandbox/', views.sandbox, name='sandbox'),
+    path('postulate/', views.postulate, name="postulate")
 ]
