@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "/usr/bin/python3",
+    "python.pythonPath": "/home/cgunn/.virtualenvs/hugeous/bin/python",
     "python.linting.pylintArgs": ["--disable=no-member"]
 }

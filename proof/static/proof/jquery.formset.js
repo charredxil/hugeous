@@ -16,7 +16,7 @@
             totalForms = $('#id_' + options.prefix + '-TOTAL_FORMS'),
             maxForms = $('#id_' + options.prefix + '-MAX_NUM_FORMS'),
             minForms = $('#id_' + options.prefix + '-MIN_NUM_FORMS'),
-            childElementSelector = 'input,select,textarea,label,div',
+            childElementSelector = 'input,select,option,textarea,label,div',
             delCssSelector = $.trim(options.deleteCssClass).replace(/\s+/g, '.'),
             addCssSelector = $.trim(options.addCssClass).replace(/\s+/g, '.');
         $$ = $(this),
@@ -148,7 +148,7 @@
             } else {
                 // Otherwise, use the last form in the formset; this works much better if you've got
                 // extra (>= 1) forms (thnaks to justhamade for pointing this out):
-                template = $('.' + options.formCssClass + ':last').clone(true).removeAttr('id');
+                template = $('.' + options.formCssClass + ':last').clone(true, true).removeAttr('id');
                 template.find('input').removeAttr("disabled");
                 template.find('input:hidden[id $= "-DELETE"]').remove();
                 // Clear all cloned fields, except those the user wants to keep (thanks to brunogola for the suggestion):
@@ -179,6 +179,7 @@
                     delCssSelector = $.trim(options.deleteCssClass).replace(/\s+/g, '.');
                 applyExtraClasses(row, formCount);
                 row.insertBefore(buttonRow).show();
+                
                 totalForms.val(formCount + 1);
                 // Check if we're above the minimum allowed number of forms -> show all delete link(s)
                 if (showDeleteLinks()) {
@@ -193,8 +194,20 @@
                 }
                 // Check if we've exceeded the maximum allowed number of forms:
                 if (!showAddButton()) buttonRow.hide();
+                
+                $(".reason").each(function () {
+                    $(".reason").selectize({
+                        persist: false,
+                        maxItems: 1,
+                    });
+                });
+                $(".reason").removeClass("reason");
+
                 // If a post-add callback was supplied, call it with the added form:
-                if (options.added) options.added(row);
+                if (options.added){
+                    options.added(row);
+                }
+
                 return false;
             });
         }
@@ -212,7 +225,7 @@
         deleteCssClass: 'delete-row',    // CSS class applied to the delete link
         formCssClass: 'dynamic-form',    // CSS class applied to each form in a formset
         extraClasses: [],                // Additional CSS classes, which will be applied to each form in turn
-        keepFieldValues: '',             // jQuery selector for fields whose values should be kept when the form is cloned
+        keepFieldValues: 'option',             // jQuery selector for fields whose values should be kept when the form is cloned
         added: null,                     // Function called each time a new form is added
         removed: null,                    // Function called each time a form is deleted
         disableInitialDels: false,

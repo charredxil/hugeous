@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import BaseFormSet, ValidationError, formset_factory
 
-from .prover import verify, theorize, make_proof, load_base_reasons
+from .prover import verify, theorize, make_proof, load_base_reasons, all_reason_names
 from .models import Reason
 
 # PROOF
@@ -9,7 +9,7 @@ from .models import Reason
 
 class ProofRowForm(forms.Form):
     statement = forms.CharField(label="", max_length=50, required=True)
-    reason = forms.CharField(label="", max_length=100, required=True)
+    reason = forms.ChoiceField(label="", choices=all_reason_names, required=True)
 
     def clean_reason(self):
         reason = self.cleaned_data["reason"]

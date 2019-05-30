@@ -25,7 +25,6 @@
         <div class="input-group-text">{{ forloop.counter }}</div>
       </div>
       {{ form.statement|add_class:"form-control" }}
-      {{ form.reason|add_class:"form-control" }}
     </div>
     {% endfor %}
 
@@ -66,13 +65,19 @@
 
 <!-- Include formset plugin - including jQuery dependency -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="{% static 'proof/selectize.js' %}"></script>
 <script src="{% static 'proof/jquery.formset.js' %}"></script>
 <script>
   $('.my-form-row').formset({
     addCssClass: "btn btn-success",
     addText: "<span style='font-family:monospace'>+</span>",
     deleteCssClass: "btn btn-secondary",
-    deleteText: "<span style='font-family:monospace'>-</span>"
+    deleteText: "<span style='font-family:monospace'>-</span>",
   });
+  $(".reason").selectize({
+      persist: false,
+      maxItems: 1,
+  });
+  $(".reason").removeClass("reason");
 </script>
 {% endblock content %}
